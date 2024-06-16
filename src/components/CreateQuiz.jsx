@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { MdAdd } from "react-icons/md"; // Importing MdAdd icon from react-icons
+import { useNavigate } from 'react-router-dom';
 
 const CreateQuiz = () => {
   const [questions, setQuestions] = useState([
@@ -22,14 +23,17 @@ const CreateQuiz = () => {
     setQuestions(updatedQuestions);
   };
 
+  const navigate = useNavigate();
   const handleSubmit = async () => {
     try {
+      console.log(questions);
       const response = await axios.post(
         "http://localhost:5000/api/quiz/create",
         { questions }
       );
-      console.log("Quiz created:", response.data);
       // Handle success (e.g., display unique code to user)
+      console.log('Quiz created:', response.data);
+      navigate('/quiz-code', { state: { code: response.data.code } });
     } catch (error) {
       console.error("Failed to create quiz:", error);
       // Handle error
