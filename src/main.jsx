@@ -8,6 +8,10 @@ import CreateQuiz from './components/CreateQuiz';
 import QuizCode from './components/QuizCode';
 import TakeQuizForm from './components/TakeQuizForm';
 import TakeQuiz from './components/TakeQuiz';
+import QuizResult from './components/QuizResult';
+import ReviewAnswers from './components/ReviewAnswers';
+import ReviewAnswersSubmitted from './components/ReviewAnswersSubmitted';
+
 // import AdminPage from './AdminPage';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
@@ -20,6 +24,9 @@ ReactDOM.createRoot(document.getElementById('root')).render(
         <Route path="/quiz-code" element={<QuizCode />} />
         <Route path="/take-quiz-form" element={<TakeQuizForm />} />
         <Route path="/take-quiz" element={<TakeQuiz />} />
+        <Route path="/quiz-result" element={<QuizResult />} />
+        <Route path="/review-answers" element={<ReviewAnswers />} />
+        <Route path="/review-answers-submitted" element={<ReviewAnswersSubmitted />} />
       </Routes>
     </Router>
   </React.StrictMode>

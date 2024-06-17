@@ -1,66 +1,24 @@
-// components/TakeQuiz.js
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
-const shuffleArray = (array) => {
-  return array.sort(() => Math.random() - 0.5);
-};
 
 const TakeQuiz = () => {
   const location = useLocation();
-  const history = useNavigate();
+  const navigate = useNavigate();
   const { studentDetails, quiz } = location.state || {};
-  const [shuffledQuestions, setShuffledQuestions] = useState(null);
   const [selectedOptions, setSelectedOptions] = useState([]);
 
   useEffect(() => {
-    if (quiz && !shuffledQuestions) {
-      // Check if shuffled questions are already in local storage
-      const storedShuffledQuestions = localStorage.getItem(`shuffledQuiz_${quiz.code}`);
-      if (storedShuffledQuestions) {
-        setShuffledQuestions(JSON.parse(storedShuffledQuestions));
+    if (quiz) {
+      const storedSelectedOptions = localStorage.getItem(`selectedOptions_${quiz.code}`);
+      if (storedSelectedOptions) {
+        setSelectedOptions(JSON.parse(storedSelectedOptions));
       } else {
-        // Shuffle questions and options if not already shuffled
-        const shuffledQuestionsArray = shuffleArray(quiz.questions).map((q) => ({
-          ...q,
-          options: shuffleArray([...q.options])
-        }));
-        setShuffledQuestions(shuffledQuestionsArray);
-        localStorage.setItem(`shuffledQuiz_${quiz.code}`, JSON.stringify(shuffledQuestionsArray));
+        setSelectedOptions(new Array(quiz.questions.length).fill(null));
       }
     }
-  }, [quiz, shuffledQuestions]);
-
-  useEffect(() => {
-    // Override history pushState to add an extra entry in the history stack
-    const originalPushState = history.pushState;
-    history.pushState = function(state) {
-      originalPushState.apply(history, arguments);
-      history.pushState({ quizPage: true }, ''); // Add extra entry
-    };
-
-    const handleBeforeUnload = (event) => {
-      event.preventDefault();
-      event.returnValue = ''; // Chrome requires returnValue to be set
-    };
-
-    const handlePopState = (event) => {
-      if (window.confirm("Are you sure you want to leave? Your progress will be lost.")) {
-        history.go(-2); // Go back two steps if the user confirms (to counteract the extra entry)
-      } else {
-        history.go(1); // Stay on the current page
-      }
-    };
-
-    window.addEventListener('beforeunload', handleBeforeUnload);
-    window.addEventListener('popstate', handlePopState);
-
-    return () => {
-      window.removeEventListener('beforeunload', handleBeforeUnload);
-      window.removeEventListener('popstate', handlePopState);
-      history.pushState = originalPushState; // Restore original pushState
-    };
-  }, [history]);
+  }, [quiz]);
 
   const handleOptionChange = (questionIndex, optionIndex) => {
     const updatedSelectedOptions = [...selectedOptions];
@@ -69,12 +27,26 @@ const TakeQuiz = () => {
     localStorage.setItem(`selectedOptions_${quiz.code}`, JSON.stringify(updatedSelectedOptions));
   };
 
+  // components/TakeQuiz.js
+
+  const handleSubmitQuiz = async () => {
+    try {
+      const response = await axios.post('http://localhost:5000/api/quiz/submit-quiz', {
+        quizCode: quiz.code,
+        rollNo: studentDetails.rollNo, // Assuming rollNo is part of studentDetails
+        selectedOptions
+      });
+
+      const { score, total } = response.data;
+
+      navigate('/quiz-result', { state: { score, total, quiz, selectedOptions } });
+    } catch (error) {
+      console.error('Error submitting quiz:', error);
+    }
+  };
+
   if (!quiz) {
     return <div className="text-center text-white">No quiz data found.</div>;
-  }
-
-  if (!shuffledQuestions) {
-    return <div className="text-center text-white">Loading...</div>;
   }
 
   return (
@@ -82,7 +54,7 @@ const TakeQuiz = () => {
       <h1 className="text-3xl font-bold mb-4 text-white">Quiz: {quiz.title}</h1>
       <p className="text-xl text-white">Roll Number: {studentDetails.rollNo}</p>
       <div className="bg-transparent text-white text-2xl p-6 shadow-lg border border-white rounded-3xl">
-        {shuffledQuestions.map((q, index) => (
+        {quiz.questions.map((q, index) => (
           <div key={index} className="mb-4 px-5 py-5">
             <p className="font-bold mb-2 border border-white rounded-xl px-3 py-2 bg-white bg-opacity-5">{`${q.question}`}</p>
             {q.options.map((opt, optIndex) => (
@@ -101,6 +73,12 @@ const TakeQuiz = () => {
           </div>
         ))}
       </div>
+      <button
+        onClick={handleSubmitQuiz}
+        className="mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg"
+      >
+        Submit Quiz
+      </button>
     </div>
   );
 };

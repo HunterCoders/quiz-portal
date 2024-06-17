@@ -21,9 +21,26 @@ const TakeQuizForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      // Validate quiz code
       const response = await axios.post('http://localhost:5000/api/quiz/validate-code', { code: studentDetails.quizCode });
       if (response.data.valid) {
-        navigate('/take-quiz', { state: { studentDetails, quiz: response.data.quiz } });
+        // Check if student has already attempted the quiz
+        const attemptResponse = await axios.get(`http://localhost:5000/api/quiz/retrieve-quiz-attempt/${studentDetails.rollNo}/${studentDetails.quizCode}`);
+        console.log(attemptResponse.data.valid);
+        if (attemptResponse.data.valid) {
+          // If attempt exists, redirect to review answers page
+          const { selectedOptions,score } = attemptResponse.data.quizAttempt;
+          navigate('/review-answers-submitted', { state: { quizCode: studentDetails.quizCode,rollNo:studentDetails.rollNo, selectedOptions,score } });
+        } else {
+          // Store roll number and quiz code in session storage
+          sessionStorage.setItem(`quiz_${studentDetails.rollNo}_${studentDetails.quizCode}`, JSON.stringify({
+            quizCode: studentDetails.quizCode,
+            rollNo: studentDetails.rollNo
+          }));
+
+          // Navigate to take quiz page
+          navigate('/take-quiz', { state: { studentDetails, quiz: response.data.quiz } });
+        }
       } else {
         setError('Invalid quiz code. Please try again.');
       }
@@ -36,7 +53,7 @@ const TakeQuizForm = () => {
     <div className="flex flex-col items-center justify-center min-h-screen bg-custom-dark-gray px-4 sm:px-6 lg:px-8">
       <h1 className="text-3xl font-bold text-white mb-4">Take Quiz</h1>
       {error && <p className="text-red-500 mb-4">{error}</p>}
-      <form className="bg-white p-6 shadow-lg w-full max-w-lg bg-opacity-5 rounded-3xl border boder-1px" onSubmit={handleSubmit}>
+      <form className="bg-white p-6 shadow-lg w-full max-w-lg bg-opacity-5 rounded-3xl border border-1px" onSubmit={handleSubmit}>
         <div className="mb-4">
           <label className="block text-white mb-2">Name</label>
           <input
