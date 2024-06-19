@@ -3,9 +3,10 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { MdAdd } from "react-icons/md"; // Importing MdAdd icon from react-icons
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 
 const CreateQuiz = () => {
+  const [title, setTitle] = useState("");
   const [questions, setQuestions] = useState([
     { question: "", options: ["", "", "", ""], correctIndex: 0 },
   ]);
@@ -27,13 +28,25 @@ const CreateQuiz = () => {
   const handleSubmit = async () => {
     try {
       console.log(questions);
+      const token = localStorage.getItem("token"); // Assuming you store the token in localStorage
+
+      if (!token) {
+        setError("No authorization token found. Please log in.");
+        return;
+      }
       const response = await axios.post(
         "http://localhost:5000/api/quiz/create",
-        { questions }
+        {title, questions },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
       );
       // Handle success (e.g., display unique code to user)
-      console.log('Quiz created:', response.data);
-      navigate('/quiz-code', { state: { code: response.data.code } });
+      console.log("Quiz created:", response.data);
+      navigate("/quiz-code", { state: { code: response.data.code } });
     } catch (error) {
       console.error("Failed to create quiz:", error);
       // Handle error
@@ -51,16 +64,42 @@ const CreateQuiz = () => {
     updatedQuestions[questionIndex].options[optionIndex] = value;
     setQuestions(updatedQuestions);
   };
+  const [isFocused, setIsFocused] = useState(false);
+  
+    const handleFocus = () => {
+      setIsFocused(true);
+    };
+  
+    const handleBlur = () => {
+      setIsFocused(false);
+    };
 
   const handleCorrectIndexChange = (questionIndex, index) => {
     const updatedQuestions = [...questions];
     updatedQuestions[questionIndex].correctIndex = index;
     setQuestions(updatedQuestions);
   };
+    
 
   return (
     <div className="container mx-auto mt-8">
       <h1 className="text-3xl font-bold mb-4 text-white">Create Quiz</h1>
+      <div className="mb-4">
+        <label className="block text-white text-3xl font-bold mb-3">
+          Title
+        </label>
+        <input
+          type="text"
+          className={`px-4 py-2 w-full text-white outline-none border-b-2 bg-transparent ${
+            isFocused || "border-b-2"
+          }`}
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          onFocus={handleFocus}
+          onBlur={handleBlur}
+          required
+        />
+      </div>
       {questions.map((q, index) => (
         <div key={index} className="mb-4">
           <textarea

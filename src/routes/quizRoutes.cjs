@@ -3,14 +3,20 @@
 const express = require('express');
 const router = express.Router();
 const Quiz = require('../models/quiz.cjs');
+const verifyToken = require('../controllers/jwtverify.cjs');
+
 
 const QuizResult=require("../models/quizResult.cjs");
 // Create quiz
-router.post('/create', async (req, res) => {
+router.post('/create', verifyToken, async (req, res) => {
   try {
-    const { questions } = req.body;
-    const code = generateUniqueCode();
-    const newQuiz = new Quiz({ code, questions });
+    const { title, questions } = req.body;
+    const code = generateUniqueCode(); // Make sure this function generates a unique quiz code
+    const newQuiz = new Quiz({title,
+      code,
+      questions,
+      teacherId: req.teacher.id, // Storing the teacher ID from the JWT
+    });
     await newQuiz.save();
     res.status(201).json({ message: 'Quiz created successfully', code });
   } catch (err) {
@@ -119,5 +125,6 @@ router.get('/fetch-quiz/:quizCode', async (req, res) => {
     res.status(500).json({ message: 'Internal server error' });
   }
 });
+
 
 module.exports = router;

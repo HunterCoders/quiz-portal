@@ -11,6 +11,11 @@ import TakeQuiz from './components/TakeQuiz';
 import QuizResult from './components/QuizResult';
 import ReviewAnswers from './components/ReviewAnswers';
 import ReviewAnswersSubmitted from './components/ReviewAnswersSubmitted';
+import TeacherRegistrationForm from './components/TeacherRegistration';
+import TeacherLogin from './components/TeacherLogin';
+import TeacherLandingPage from './components/TeacherLandingPage';
+import TeacherDashboard from './components/TeacherDashboard';
+import SeeQuizzes from './components/SeeQuizes';
 
 // import AdminPage from './AdminPage';
 
@@ -20,7 +25,13 @@ ReactDOM.createRoot(document.getElementById('root')).render(
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/user" element={<UserLandingPage />} />
-        <Route path="/admin" element={<CreateQuiz />} />
+        <Route path="/admin" element={<TeacherLandingPage />} />
+        <Route path="/register" element={<TeacherRegistrationForm />} />
+        <Route path="/login" element={<TeacherLogin />} />
+        <Route path="/create-quiz" element={<CreateQuiz />} />
+        <Route path="/teacher-dash" element={<TeacherDashboard />} />
+        <Route path="/see-quizzes" element={<SeeQuizzes />} />
+
         <Route path="/quiz-code" element={<QuizCode />} />
         <Route path="/take-quiz-form" element={<TakeQuizForm />} />
         <Route path="/take-quiz" element={<TakeQuiz />} />
