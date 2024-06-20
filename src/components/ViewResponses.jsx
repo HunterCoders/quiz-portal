@@ -17,7 +17,7 @@ const ViewResponses = () => {
             Authorization: `Bearer ${token}`,
           },
         };
-        const response = await axios.get(`http://localhost:5000/api/teacher/responses/${quizCode}`, config);
+        const response = await axios.get(`/api/teacher/responses/${quizCode}`, config);
         setResponses(response.data.responses);
       } catch (error) {
         console.error('Error fetching responses:', error);

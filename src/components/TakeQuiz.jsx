@@ -31,7 +31,7 @@ const TakeQuiz = () => {
 
   const handleSubmitQuiz = async () => {
     try {
-      const response = await axios.post('http://localhost:5000/api/quiz/submit-quiz', {
+      const response = await axios.post('/api/quiz/submit-quiz', {
         quizCode: quiz.code,
         rollNo: studentDetails.rollNo, // Assuming rollNo is part of studentDetails
         selectedOptions

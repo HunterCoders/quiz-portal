@@ -13,7 +13,7 @@ const ReviewAnswersSubmitted = () => {
     const fetchQuizDetails = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:5000/api/quiz/fetch-quiz/${quizCode}`
+          `/api/quiz/fetch-quiz/${quizCode}`
         );
         const { quiz } = response.data;
         setQuiz(quiz);

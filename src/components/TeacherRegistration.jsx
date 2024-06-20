@@ -26,7 +26,7 @@ const TeacherRegistrationForm = () => {
     }
 
     try {
-      const response = await axios.post('http://localhost:5000/api/teacher/register', {
+      const response = await axios.post('/api/teacher/register', {
         email: formDetails.email,
         password: formDetails.password,
       });

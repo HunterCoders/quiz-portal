@@ -3,12 +3,17 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const path = require('path');
+
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5173;
 const MONGO_URI = 'mongodb+srv://anusin1947:bzwfU4TPsC7yN70q@quiz-portal.ewkonna.mongodb.net/?retryWrites=true&w=majority&appName=quiz-portal';
 
-app.use(cors({ origin: 'http://localhost:5173', credentials: true }));
+const buildPath = path.join(__dirname, '../dist');
+app.use(express.static(buildPath));
+
+app.use(cors({ origin: '*', credentials: true }));
 // Connect to MongoDB
 mongoose.connect(MONGO_URI, { useNewUrlParser: true });
 const db = mongoose.connection;

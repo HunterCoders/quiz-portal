@@ -35,7 +35,7 @@ const CreateQuiz = () => {
         return;
       }
       const response = await axios.post(
-        "http://localhost:5000/api/quiz/create",
+        "/api/quiz/create",
         {title, questions },
         {
           headers: {

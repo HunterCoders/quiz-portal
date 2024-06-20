@@ -22,10 +22,10 @@ const TakeQuizForm = () => {
     e.preventDefault();
     try {
       // Validate quiz code
-      const response = await axios.post('http://localhost:5000/api/quiz/validate-code', { code: studentDetails.quizCode });
+      const response = await axios.post('/api/quiz/validate-code', { code: studentDetails.quizCode });
       if (response.data.valid==="True") {
         // Check if student has already attempted the quiz
-        const attemptResponse = await axios.get(`http://localhost:5000/api/quiz/retrieve-quiz-attempt/${studentDetails.rollNo}/${studentDetails.quizCode}`);
+        const attemptResponse = await axios.get(`/api/quiz/retrieve-quiz-attempt/${studentDetails.rollNo}/${studentDetails.quizCode}`);
         console.log(attemptResponse.data.valid);
         if (attemptResponse.data.valid) {
           // If attempt exists, redirect to review answers page
@@ -42,7 +42,7 @@ const TakeQuizForm = () => {
           navigate('/take-quiz', { state: { studentDetails, quiz: response.data.quiz } });
         }
       }else if(response.data.valid==='NActive') {
-        const attemptResponse = await axios.get(`http://localhost:5000/api/quiz/retrieve-quiz-attempt/${studentDetails.rollNo}/${studentDetails.quizCode}`);
+        const attemptResponse = await axios.get(`/api/quiz/retrieve-quiz-attempt/${studentDetails.rollNo}/${studentDetails.quizCode}`);
         console.log(attemptResponse.data.valid);
         if (attemptResponse.data.valid) {
           // If attempt exists, redirect to review answers page

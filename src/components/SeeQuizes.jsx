@@ -20,7 +20,7 @@ const SeeQuizes = () => {
           },
         };
         const response = await axios.get(
-          "http://localhost:5000/api/teacher/teacher-quizzes",
+          "/api/teacher/teacher-quizzes",
           config
         );
         setQuizzes(response.data.quizzes);
@@ -42,7 +42,7 @@ const SeeQuizes = () => {
           Authorization: `Bearer ${token}`,
         },
       };
-      await axios.post(`http://localhost:5000/api/teacher/disable/${quizCode}`, {}, config);
+      await axios.post(`/api/teacher/disable/${quizCode}`, {}, config);
       fetchQuizzes(); // Refresh the list of quizzes after disabling
     } catch (error) {
       console.error('Error disabling quiz:', error);

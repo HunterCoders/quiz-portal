@@ -21,7 +21,7 @@ const TeacherLogin = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/teacher/login",
+        "/api/teacher/login",
         {
           email: formDetails.email,
           password: formDetails.password,

@@ -10,9 +10,9 @@ const UserLandingPage = () => {
           <Link to="/take-quiz-form" className="block bg-custom-dark-gray border border-white hover:bg-gray-700 text-white font-bold py-3 px-6 rounded-lg transition duration-300 ease-in-out">
             Take Quiz
           </Link>
-          <Link to="/quizzes" className="block bg-custom-dark-gray border border-white hover:bg-gray-700 text-white font-bold py-3 px-6 rounded-lg transition duration-300 ease-in-out">
+          {/* <Link to="/quizzes" className="block bg-custom-dark-gray border border-white hover:bg-gray-700 text-white font-bold py-3 px-6 rounded-lg transition duration-300 ease-in-out">
             View Quizzes
-          </Link>
+          </Link> */}
         </div>
       </div>
     </div>
