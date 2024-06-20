@@ -12,6 +12,7 @@ router.post('/create', verifyToken, async (req, res) => {
   try {
     const { title, questions } = req.body;
     const code = generateUniqueCode(); // Make sure this function generates a unique quiz code
+    console.log()
     const newQuiz = new Quiz({title,
       code,
       questions,
@@ -34,11 +35,16 @@ function generateUniqueCode() {
 router.post('/validate-code', async (req, res) => {
   try {
     const { code } = req.body;
-    const quiz = await Quiz.findOne({ code });
+    const quiz = await Quiz.findOne({ code }).select();
+
     if (quiz) {
-      res.status(200).json({ valid: true, quiz });
+      if (quiz.isActive) {
+        res.status(200).json({ valid: "True", quiz });
+      } else {
+        res.status(200).json({ valid: "NActive", message: 'Quiz is not active' });
+      }
     } else {
-      res.status(200).json({ valid: false });
+      res.status(200).json({ valid: "NFound", message: 'Quiz not found' });
     }
   } catch (err) {
     console.error(err);

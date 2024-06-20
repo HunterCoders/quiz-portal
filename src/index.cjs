@@ -10,7 +10,7 @@ const MONGO_URI = 'mongodb+srv://anusin1947:bzwfU4TPsC7yN70q@quiz-portal.ewkonna
 
 app.use(cors({ origin: 'http://localhost:5173', credentials: true }));
 // Connect to MongoDB
-mongoose.connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect(MONGO_URI, { useNewUrlParser: true });
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 db.once('open', () => {

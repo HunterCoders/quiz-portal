@@ -16,6 +16,7 @@ import TeacherLogin from './components/TeacherLogin';
 import TeacherLandingPage from './components/TeacherLandingPage';
 import TeacherDashboard from './components/TeacherDashboard';
 import SeeQuizzes from './components/SeeQuizes';
+import ViewResponses from './components/ViewResponses';
 
 // import AdminPage from './AdminPage';
 
@@ -31,6 +32,8 @@ ReactDOM.createRoot(document.getElementById('root')).render(
         <Route path="/create-quiz" element={<CreateQuiz />} />
         <Route path="/teacher-dash" element={<TeacherDashboard />} />
         <Route path="/see-quizzes" element={<SeeQuizzes />} />
+        <Route path="/view-responses" element={<ViewResponses />} />
+
 
         <Route path="/quiz-code" element={<QuizCode />} />
         <Route path="/take-quiz-form" element={<TakeQuizForm />} />

@@ -23,7 +23,7 @@ const TakeQuizForm = () => {
     try {
       // Validate quiz code
       const response = await axios.post('http://localhost:5000/api/quiz/validate-code', { code: studentDetails.quizCode });
-      if (response.data.valid) {
+      if (response.data.valid==="True") {
         // Check if student has already attempted the quiz
         const attemptResponse = await axios.get(`http://localhost:5000/api/quiz/retrieve-quiz-attempt/${studentDetails.rollNo}/${studentDetails.quizCode}`);
         console.log(attemptResponse.data.valid);
@@ -41,8 +41,19 @@ const TakeQuizForm = () => {
           // Navigate to take quiz page
           navigate('/take-quiz', { state: { studentDetails, quiz: response.data.quiz } });
         }
-      } else {
-        setError('Invalid quiz code. Please try again.');
+      }else if(response.data.valid==='NActive') {
+        const attemptResponse = await axios.get(`http://localhost:5000/api/quiz/retrieve-quiz-attempt/${studentDetails.rollNo}/${studentDetails.quizCode}`);
+        console.log(attemptResponse.data.valid);
+        if (attemptResponse.data.valid) {
+          // If attempt exists, redirect to review answers page
+          const { selectedOptions,score } = attemptResponse.data.quizAttempt;
+          navigate('/review-answers-submitted', { state: { quizCode: studentDetails.quizCode,rollNo:studentDetails.rollNo, selectedOptions,score } });
+        }
+        else
+        setError(response.data.message);
+      }
+      else if(response.data.valid==='NFound') {
+        setError(response.data.message);
       }
     } catch (err) {
       setError('An error occurred while validating the quiz code. Please try again.');

@@ -19,7 +19,7 @@ const quizSchema = new mongoose.Schema({
     type: Boolean,
     default: true
   },
-  teacher: {
+  teacherId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Teacher'
   }
