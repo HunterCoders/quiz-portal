@@ -1,5 +1,3 @@
-// components/CreateQuiz.js
-
 import React, { useState } from "react";
 import axios from "axios";
 import { MdAdd } from "react-icons/md"; // Importing MdAdd icon from react-icons
@@ -10,6 +8,7 @@ const CreateQuiz = () => {
   const [questions, setQuestions] = useState([
     { question: "", options: ["", "", "", ""], correctIndex: 0 },
   ]);
+  const [error, setError] = useState("");
 
   const handleAddQuestion = () => {
     setQuestions([
@@ -26,17 +25,36 @@ const CreateQuiz = () => {
 
   const navigate = useNavigate();
   const handleSubmit = async () => {
+    // Validation
+    if (!title.trim()) {
+      setError("Quiz title cannot be blank.");
+      return;
+    }
+    
+    for (let i = 0; i < questions.length; i++) {
+      if (!questions[i].question.trim()) {
+        setError(`Question ${i + 1} cannot be blank.`);
+        return;
+      }
+      for (let j = 0; j < questions[i].options.length; j++) {
+        if (!questions[i].options[j].trim()) {
+          setError(`Option ${j + 1} for question ${i + 1} cannot be blank.`);
+          return;
+        }
+      }
+    }
+
     try {
-      console.log(questions);
       const token = localStorage.getItem("token"); // Assuming you store the token in localStorage
 
       if (!token) {
         setError("No authorization token found. Please log in.");
         return;
       }
+
       const response = await axios.post(
         "/api/quiz/create",
-        {title, questions },
+        { title, questions },
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -49,7 +67,7 @@ const CreateQuiz = () => {
       navigate("/quiz-code", { state: { code: response.data.code } });
     } catch (error) {
       console.error("Failed to create quiz:", error);
-      // Handle error
+      setError("Failed to create quiz. Please try again.");
     }
   };
 
@@ -64,30 +82,29 @@ const CreateQuiz = () => {
     updatedQuestions[questionIndex].options[optionIndex] = value;
     setQuestions(updatedQuestions);
   };
+
   const [isFocused, setIsFocused] = useState(false);
-  
-    const handleFocus = () => {
-      setIsFocused(true);
-    };
-  
-    const handleBlur = () => {
-      setIsFocused(false);
-    };
+
+  const handleFocus = () => {
+    setIsFocused(true);
+  };
+
+  const handleBlur = () => {
+    setIsFocused(false);
+  };
 
   const handleCorrectIndexChange = (questionIndex, index) => {
     const updatedQuestions = [...questions];
     updatedQuestions[questionIndex].correctIndex = index;
     setQuestions(updatedQuestions);
   };
-    
 
   return (
     <div className="container mx-auto mt-8">
       <h1 className="text-3xl font-bold mb-4 text-white">Create Quiz</h1>
+      {error && <p className="text-red-500 mb-4">{error}</p>}
       <div className="mb-4">
-        <label className="block text-white text-3xl font-bold mb-3">
-          Title
-        </label>
+        <label className="block text-white text-3xl font-bold mb-3">Title</label>
         <input
           type="text"
           className={`px-4 py-2 w-full text-white outline-none border-b-2 bg-transparent ${
@@ -143,15 +160,10 @@ const CreateQuiz = () => {
         </div>
       ))}
       <div className="flex justify-end">
-        {/* <button
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg flex items-center"
-          
-        > */}
         <MdAdd
-          className="mr-2 text-blue-500 text-3xl border-4 border-blue-500 rounded-full"
+          className="mr-2 text-blue-500 text-3xl border-4 border-blue-500 rounded-full cursor-pointer"
           onClick={handleAddQuestion}
         />
-        {/* </button> */}
       </div>
       <button
         className="bg-custom-dark-gray border border-white hover:bg-green-900 text-white font-bold py-2 px-4 rounded-lg mt-4"

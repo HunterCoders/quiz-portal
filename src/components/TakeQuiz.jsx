@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
-import axios from 'axios';
-
+import React, { useState, useEffect } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import axios from "axios";
+import styled from "styled-components";
 
 const TakeQuiz = () => {
   const location = useLocation();
@@ -9,9 +9,28 @@ const TakeQuiz = () => {
   const { studentDetails, quiz } = location.state || {};
   const [selectedOptions, setSelectedOptions] = useState([]);
 
+  const radioButtonStyles = {
+    appearance: 'none',
+    width: '20px',
+    height: '20px',
+    borderRadius: '50%',
+    border: '2px solid blue',
+    backgroundColor: 'white',
+    cursor: 'pointer',
+    outline: 'none',
+    marginRight: '10px'
+  };
+
+  const radioButtonCheckedStyles = {
+    ...radioButtonStyles,
+    backgroundColor: 'blue'
+  };
+
   useEffect(() => {
     if (quiz) {
-      const storedSelectedOptions = localStorage.getItem(`selectedOptions_${quiz.code}`);
+      const storedSelectedOptions = localStorage.getItem(
+        `selectedOptions_${quiz.code}`
+      );
       if (storedSelectedOptions) {
         setSelectedOptions(JSON.parse(storedSelectedOptions));
       } else {
@@ -24,24 +43,29 @@ const TakeQuiz = () => {
     const updatedSelectedOptions = [...selectedOptions];
     updatedSelectedOptions[questionIndex] = optionIndex;
     setSelectedOptions(updatedSelectedOptions);
-    localStorage.setItem(`selectedOptions_${quiz.code}`, JSON.stringify(updatedSelectedOptions));
+    localStorage.setItem(
+      `selectedOptions_${quiz.code}`,
+      JSON.stringify(updatedSelectedOptions)
+    );
   };
 
   // components/TakeQuiz.js
 
   const handleSubmitQuiz = async () => {
     try {
-      const response = await axios.post('/api/quiz/submit-quiz', {
+      const response = await axios.post("/api/quiz/submit-quiz", {
         quizCode: quiz.code,
         rollNo: studentDetails.rollNo, // Assuming rollNo is part of studentDetails
-        selectedOptions
+        selectedOptions,
       });
 
       const { score, total } = response.data;
 
-      navigate('/quiz-result', { state: { score, total, quiz, selectedOptions } });
+      navigate("/quiz-result", {
+        state: { score, total, quiz, selectedOptions },
+      });
     } catch (error) {
-      console.error('Error submitting quiz:', error);
+      console.error("Error submitting quiz:", error);
     }
   };
 
@@ -61,9 +85,10 @@ const TakeQuiz = () => {
               <div key={optIndex} className="mb-2">
                 <input
                   type="radio"
+                  style={selectedOptions[index] === optIndex ? radioButtonCheckedStyles : radioButtonStyles}
                   id={`q${index}_opt${optIndex}`}
                   name={`q${index}`}
-                  className="mr-2"
+                  className="mr-2 text-2xl"
                   checked={selectedOptions[index] === optIndex}
                   onChange={() => handleOptionChange(index, optIndex)}
                 />
