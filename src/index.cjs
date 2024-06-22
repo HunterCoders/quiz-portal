@@ -29,6 +29,8 @@ app.use(bodyParser.json());
 // Routes
 app.use('/api/quiz', require('./routes/quizRoutes.cjs'));
 app.use('/api/teacher', require('./routes/teacherRoutes.cjs'));
+app.use('/api/admin', require('./routes/logout.cjs'));
+
 
 // Start server
 app.listen(PORT, () => {

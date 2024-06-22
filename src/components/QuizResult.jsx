@@ -20,15 +20,17 @@ const QuizResult = () => {
   };
 
   return (
-    <div className="container mx-auto mt-8">
-      <h1 className="text-3xl font-bold mb-4 text-white">Quiz Result</h1>
-      <p className="text-2xl text-white">You scored {score} out of {total}</p>
-      <button
-        onClick={handleReviewAnswers}
-        className="mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg"
-      >
-        Review Answers
-      </button>
+    <div className="flex items-center justify-center min-h-screen">
+      <div className="bg-transperent p-8 rounded-lg border border-white shadow-lg text-center w-full max-w-md mx-auto">
+        <h1 className="text-3xl font-bold mb-4 text-white">Quiz Result</h1>
+        <p className="text-2xl text-white mb-4 flex">You scored <div className='text-blue-500 text-2xl'>{score}</div> out of <div className='text-3xl text-blue-700'>{total}</div></p>
+        <button
+          onClick={handleReviewAnswers}
+          className="mt-4 bg-transperent hover:bg-gray-500 border border-white text-white font-bold py-2 px-4 rounded-lg"
+        >
+          Review Answers
+        </button>
+      </div>
     </div>
   );
 };
